@@ -23,3 +23,5 @@ awslocal sqs create-queue \
         \"FifoQueue\": \"true\",
         \"ContentBasedDeduplication\": \"true\"
     }"
+
+touch /tmp/init-finished

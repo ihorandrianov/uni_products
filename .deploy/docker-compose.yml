@@ -4,21 +4,27 @@ services:
       context: ../applications
       target: notifications
     env_file: ./.env
+    restart: always
     networks:
       - common
     depends_on:
-      - localstack
+      localstack:
+        condition: service_healthy
+
   products:
     build:
       context: ../applications
       target: products
     env_file: ./.env
+    restart: always
     ports:
       - "3000:3000"
     networks:
       - common
     depends_on:
-      - localstack
+      localstack:
+        condition: service_healthy
+
   psql:
     container_name: psql
     image: postgres:16
@@ -49,6 +55,7 @@ services:
       - psql
     networks:
       - common
+
   prometheus:
     image: prom/prometheus
     volumes:
@@ -69,6 +76,15 @@ services:
       - AWS_DEFAULT_REGION=${AWS_REGION}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    healthcheck:
+      test: >-
+        awslocal sqs list-queues &&
+        echo "Checking if init script finished..."  &&
+        [ -f /tmp/init-finished ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     volumes:
       - "./init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh:ro"
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
