@@ -20,7 +20,6 @@ WORKDIR /app
 COPY --from=notifications-builder /app/dist/apps/notifications ./dist
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package*.json ./
-EXPOSE 3000
 CMD ["node", "dist/main"]
 
 # Products application
@@ -29,5 +28,5 @@ WORKDIR /app
 COPY --from=products-builder /app/dist/apps/products ./dist
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/package*.json ./
-EXPOSE 3001
+EXPOSE 3000
 CMD ["node", "dist/main"]
