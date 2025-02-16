@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
-import { z, ZodError } from 'Zod';
+import { z, ZodError } from 'zod';
 
 @Injectable()
 export class ZodValidationPipe<TOutput, TInput = TOutput>

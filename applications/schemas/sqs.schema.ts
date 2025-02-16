@@ -1,4 +1,4 @@
-import z from 'Zod';
+import { z } from 'zod';
 import { PRODUCT_SCHEMA } from './product.schema';
 
 export const SQS_PAYLOAD_SCHEMA = z.object({

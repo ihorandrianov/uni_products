@@ -1,19 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { Controller, LoggerService } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { NotificationsService } from './notifications.service';
-import { MessageData } from 'schemas/message.schema';
+
+import { Product } from 'schemas/product.schema';
 
 @Controller()
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(private readonly logger: LoggerService) {}
 
-  @MessagePattern('product::create')
-  productCreated(@Payload() data: MessageData): void {
-    console.log(data);
+  @MessagePattern('create')
+  productCreated(@Payload() data: Product): void {
+    this.logger.log(`Product created successfully: ${JSON.stringify(data)}`);
   }
 
-  @MessagePattern('product::delete')
-  productDeleted(@Payload() data: MessageData): void {
-    console.log(data);
+  @MessagePattern('delete')
+  productDeleted(@Payload() data: Product): void {
+    this.logger.log(`Product deleted successfully: ${JSON.stringify(data)}`);
   }
 }

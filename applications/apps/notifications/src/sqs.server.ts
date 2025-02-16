@@ -7,7 +7,7 @@ import {
   Message,
 } from '@aws-sdk/client-sqs';
 import { parseBody } from 'schemas/message.schema';
-import { ZodError } from 'Zod';
+import { ZodError } from 'zod';
 
 const WAIT_TIME_IN_SECONDS = 20;
 const MAX_NUMBER_OF_MESSAGES = 10;
@@ -90,7 +90,7 @@ export class SqsServer extends Server implements CustomTransportStrategy {
       return;
     }
 
-    const { action, data } = parseBody(body);
+    const { action, product } = parseBody(body);
     const handlers = this.getHandlers();
     const handler = handlers.get(action);
     if (!handler) {
@@ -99,7 +99,7 @@ export class SqsServer extends Server implements CustomTransportStrategy {
       return;
     }
     this.logger.log(`Processing message: ${message.MessageId}`);
-    await handler(data);
+    await handler(product);
     await this.deleteMessage(message);
   }
 

@@ -59,7 +59,6 @@ export class ProductsRepository {
       .slice(0, limit)
       .map((row) => PRODUCT_SCHEMA.parse(row));
 
-    // If we got more results than limit, there are more pages
     const hasMore = productsQuery.rows.length > limit;
     const nextCursor = hasMore ? products[products.length - 1].id : null;
 

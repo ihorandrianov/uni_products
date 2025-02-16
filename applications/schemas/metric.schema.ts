@@ -1,4 +1,4 @@
-import z from 'Zod';
+import { z } from 'zod';
 import { CollectFunction, Gauge } from 'prom-client';
 
 const BASE_CONFIG_SCHEMA = z.object({

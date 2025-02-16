@@ -1,8 +1,8 @@
-import z from 'Zod';
+import { z } from 'zod';
 
 export const CREATE_PRODUCT_SCHEMA = z.object({
-  name: z.string().min(1).max(20),
-  description: z.string().min(1).max(200),
+  name: z.string().trim().min(1).max(100),
+  description: z.string().trim().min(1).max(500),
   price: z.number().positive(),
 });
 

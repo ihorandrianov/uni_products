@@ -23,7 +23,14 @@ export class PrometheusService {
     }
   }
 
-  async getMetrics(): Promise<string> {
-    return this.registry.metrics();
+  async getMetrics(): Promise<{
+    metrics: string;
+    contentType: string;
+  }> {
+    const metrics = await this.registry.metrics();
+    return {
+      metrics,
+      contentType: this.registry.contentType,
+    };
   }
 }

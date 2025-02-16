@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-
 import { NotificationsModule } from './notifications.module';
 import { SqsServer } from './sqs.server';
 import { SQS } from '@aws-sdk/client-sqs';
@@ -10,6 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(NotificationsModule);
   const configService = app.get(ConfigService<EnvConfig, true>);
   const sqsClient = new SQS({
+    endpoint: configService.get('LOCALSTACK_ENDPOINT'),
     region: configService.get('AWS_REGION'),
     credentials: {
       accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
@@ -20,6 +20,7 @@ async function bootstrap() {
   app.connectMicroservice({
     strategy: new SqsServer(sqsClient, configService.get('SQS_QUEUE_URL')),
   });
+  await app.startAllMicroservices();
 }
 
 void bootstrap();

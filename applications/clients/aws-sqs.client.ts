@@ -40,7 +40,6 @@ export class AwsSqsClient extends ClientProxy {
         `Error sending message to SQS: ${(error as Error).message}`,
         'error',
       );
-      throw error;
     }
   }
 
@@ -104,8 +103,7 @@ export class AwsSqsClient extends ClientProxy {
     const sendMessageCommand = new SendMessageCommand({
       QueueUrl: this.queueUrl,
       MessageBody: JSON.stringify(message),
-      MessageGroupId: message.action, // Used for FIFO queues
-      MessageDeduplicationId: Date.now().toString(), // Unique ID for deduplication
+      MessageGroupId: message.action,
     });
     return sendMessageCommand;
   }
