@@ -1,22 +1,62 @@
 services:
+  notifications:
+    build:
+      context: ../applications
+      target: notifications
+    env_file: ./.env
+    networks:
+      - common
+    depends_on:
+      - localstack
+  products:
+    build:
+      context: ../applications
+      target: products
+    env_file: ./.env
+    ports:
+      - "3000:3000"
+    networks:
+      - common
+    depends_on:
+      - localstack
   psql:
     container_name: psql
     image: postgres:16
     environment:
-      POSTGRES_DB: "legaltech_test"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - ./psql:/var/lib/postgresql/data
+    networks:
+      - common
 
+  flyway:
+    image: flyway/flyway:latest
+    command: migrate
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    volumes:
+      - ./migrations/sql:/flyway/sql
+      - ./migrations/flyway.conf:/flyway/conf/flyway.conf
+    depends_on:
+      - psql
+    networks:
+      - common
   prometheus:
     image: prom/prometheus
     volumes:
       - "./prometheus.yml:/etc/prometheus/prometheus.yml"
     ports:
       - 9090:9090
+    networks:
+      - common
 
   localstack:
     container_name: localstack
@@ -26,14 +66,19 @@ services:
     environment:
       - SERVICES=sqs
       - DOCKER_HOST=unix:///var/run/docker.sock
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - AWS_DEFAULT_REGION=${AWS_REGION}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SERCRET_ACCESS_KEY}
-      - SQS_ENDPOINT_STRATEGY=${SQS_ENDPOINT_STRATEGY}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     volumes:
-      - "./init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh"
+      - "./init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh:ro"
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - common
 
 volumes:
   psql:
+
+networks:
+  common:
+    driver: bridge
