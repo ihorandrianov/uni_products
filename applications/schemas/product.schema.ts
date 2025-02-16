@@ -28,10 +28,12 @@ export const PAGINATION_RESULT = z.object({
   nextCursor: z.number().nullable(),
 });
 
-export const DELETE_PRODUCT_PARAM = z
-  .string()
-  .transform((val) => parseInt(val || '10'))
-  .pipe(z.number().int().min(0));
+export const DELETE_PRODUCT_PARAM = z.object({
+  id: z
+    .string()
+    .refine((val) => !isNaN(parseInt(val)), 'should be valid number')
+    .transform((val) => parseInt(val)),
+});
 
 export type DeleteProductInput = z.input<typeof DELETE_PRODUCT_PARAM>;
 export type DeleteProductOutput = z.output<typeof DELETE_PRODUCT_PARAM>;

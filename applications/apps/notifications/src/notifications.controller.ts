@@ -1,11 +1,12 @@
-import { Controller, LoggerService } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { Product } from 'schemas/product.schema';
 
 @Controller()
 export class NotificationsController {
-  constructor(private readonly logger: LoggerService) {}
+  private readonly logger = new Logger(NotificationsController.name);
+  constructor() {}
 
   @MessagePattern('create')
   productCreated(@Payload() data: Product): void {

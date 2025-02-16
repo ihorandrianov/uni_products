@@ -233,7 +233,7 @@ export class ProductsController {
         DELETE_PRODUCT_PARAM,
       ),
     )
-    id: number,
+    { id }: DeleteProductOutput,
   ) {
     await this.productsService.deleteProduct(id);
     return {

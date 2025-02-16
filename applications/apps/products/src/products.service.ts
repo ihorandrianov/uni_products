@@ -39,6 +39,7 @@ export class ProductsService {
       await this.notifyService.notifyProductDeleted(product);
       this.productMetricService.incrementDeleted('success');
     } catch (error) {
+      console.log(error);
       this.productMetricService.incrementDeleted('failure');
       if (error instanceof NotFoundException) {
         throw error;
