@@ -18,6 +18,7 @@ export class PrometheusService {
 
   incrementMetric(name: string, labels: Record<string, string> = {}) {
     const metric = this.metricMap.get(name);
+    // other metrics not yet implemented
     if (metric && metric instanceof Counter) {
       metric.labels(labels).inc();
     }
