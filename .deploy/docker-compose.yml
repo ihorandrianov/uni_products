@@ -39,7 +39,7 @@ services:
     networks:
       - common
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "myuser"]
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
