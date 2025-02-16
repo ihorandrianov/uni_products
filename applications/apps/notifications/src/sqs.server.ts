@@ -49,8 +49,8 @@ export class SqsServer extends Server implements CustomTransportStrategy {
           QueueUrl: this.queueUrl,
           WaitTimeSeconds: WAIT_TIME_IN_SECONDS,
           MaxNumberOfMessages: MAX_NUMBER_OF_MESSAGES,
-          MessageAttributeNames: ['All'], // Fetch all message attributes
-          AttributeNames: [QueueAttributeName.All], // Request all attributes
+          MessageAttributeNames: ['All'],
+          AttributeNames: [QueueAttributeName.All],
         });
 
         const { Messages } = await this.sqs.send(command);
